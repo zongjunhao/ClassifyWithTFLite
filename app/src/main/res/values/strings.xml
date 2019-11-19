@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ClassifyWithTFLite</string>
+    <string name="choose_mode">选取图片</string>
+    <string name="choose_from_camera">相机拍摄</string>
+    <string name="choose_from_DCIM">从相册选取</string>
+    <string name="classifier_result">识别结果：</string>
+    <string name="url_to_buy">购买链接：</string>
+</resources>
