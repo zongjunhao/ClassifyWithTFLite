@@ -6,11 +6,13 @@
     <string name="classifier_result">识别结果：</string>
     <string name="url_to_buy">购买链接：</string>
     <string name="account">账号</string>
+    <string name="userName">用户名</string>
     <string name="email">邮箱</string>
     <string name="password">密码</string>
+    <string name="confirmPassword">确认密码</string>
     <string name="user">用户</string>
     <string name="admin">管理员</string>
     <string name="login">登录</string>
     <string name="register">注册</string>
-    <string name="registerTip">没有账号？注册→</string>
+    <string name="registerTip">没有账号？现在注册</string>
 </resources>

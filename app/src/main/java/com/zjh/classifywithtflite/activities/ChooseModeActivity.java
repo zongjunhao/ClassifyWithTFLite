@@ -51,11 +51,6 @@ public class ChooseModeActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!isTaskRoot()) {
-            finish();
-        }
-
-
         setContentView(R.layout.activity_choose_mode);
 
         findViewById(R.id.takePhotoByCamera).setOnClickListener(this);
