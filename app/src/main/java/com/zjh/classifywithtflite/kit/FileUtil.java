@@ -1,4 +1,4 @@
-package com.zjh.classifywithtflite;
+package com.zjh.classifywithtflite.kit;
 
 import android.os.Environment;
 

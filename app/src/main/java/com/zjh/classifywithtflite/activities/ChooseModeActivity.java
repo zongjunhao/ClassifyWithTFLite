@@ -1,4 +1,4 @@
-package com.zjh.classifywithtflite;
+package com.zjh.classifywithtflite.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,12 +16,14 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import com.zjh.classifywithtflite.kit.FileUtil;
+import com.zjh.classifywithtflite.R;
 
 import java.io.File;
 import java.util.ArrayList;

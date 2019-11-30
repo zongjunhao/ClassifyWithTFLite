@@ -1,4 +1,4 @@
-package com.zjh.classifywithtflite;
+package com.zjh.classifywithtflite.kit;
 
 import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.module.AppGlideModule;

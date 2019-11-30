@@ -1,15 +1,13 @@
-package com.zjh.classifywithtflite;
+package com.zjh.classifywithtflite.activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +16,8 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.zjh.classifywithtflite.GlideApp;
+import com.zjh.classifywithtflite.R;
 import com.zjh.classifywithtflite.tflite.Classifier;
 import com.zjh.classifywithtflite.tflite.Classifier.Recognition;
 

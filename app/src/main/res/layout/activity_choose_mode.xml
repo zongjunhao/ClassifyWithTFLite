@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ChooseModeActivity">
+    tools:context=".activities.ChooseModeActivity">
 
     <TextView
         android:layout_marginTop="50dp"
