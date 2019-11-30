@@ -16,7 +16,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.zjh.classifywithtflite.GlideApp;
+import com.zjh.classifywithtflite.kit.GlideApp;
 import com.zjh.classifywithtflite.R;
 import com.zjh.classifywithtflite.tflite.Classifier;
 import com.zjh.classifywithtflite.tflite.Classifier.Recognition;

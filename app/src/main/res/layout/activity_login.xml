@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/tabhost"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- TabWidget组件id值不可变-->
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></TabWidget>
+
+
+        <!-- FrameLayout布局，id值不可变-->
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@android:id/tabs"
+            android:padding="50dp">
+
+            <!-- 第一个tab的布局 -->
+            <LinearLayout
+                android:id="@+id/userLogin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+                <EditText
+                    android:id="@+id/userEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="78dp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:hint="@string/email"
+                    android:inputType="textEmailAddress" />
+
+                <EditText
+                    android:id="@+id/userPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="28dp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:hint="@string/password"
+                    android:inputType="textPassword" />
+
+                <Button
+                    android:id="@+id/userLoginButton"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="@string/login" />
+
+                <TextView
+                    android:id="@+id/goToRegister"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/registerTip" />
+            </LinearLayout>
+
+
+            <!-- 第二个tab的布局 -->
+            <LinearLayout
+                android:id="@+id/adminLogin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+                <EditText
+                    android:id="@+id/adminAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="78dp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:hint="@string/account"
+                    android:inputType="text" />
+
+                <EditText
+                    android:id="@+id/adminPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="28dp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:hint="@string/password"
+                    android:inputType="textPassword" />
+
+                <Button
+                    android:id="@+id/adminLoginButton"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="@string/login" />
+            </LinearLayout>
+
+        </FrameLayout>
+    </LinearLayout>
+
+</TabHost>

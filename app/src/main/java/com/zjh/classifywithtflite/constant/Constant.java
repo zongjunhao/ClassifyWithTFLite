@@ -11,4 +11,6 @@ public class Constant {
 
     // 各个Servlet的请求地址
     public final static String ADMIN_LOGIN_URL = REQUEST_URL + "admin/login";
+
+
 }
