@@ -1,16 +1,7 @@
 package com.zjh.classifywithtflite.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -22,8 +13,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.zjh.classifywithtflite.kit.FileUtil;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+
 import com.zjh.classifywithtflite.R;
+import com.zjh.classifywithtflite.kit.FileUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -132,19 +131,13 @@ public class ChooseModeActivity extends AppCompatActivity implements View.OnClic
         new AlertDialog.Builder(this)
                 .setTitle("权限获取提示")
                 .setMessage("必须要有存储权限才能获取到图片")
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                })
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions(ChooseModeActivity.this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST);
-                    }
-                }).setCancelable(false)
+                .setNegativeButton("取消", (dialog, which) -> dialog.cancel())
+                .setPositiveButton("确定", (dialog, which) ->
+                        ActivityCompat.requestPermissions(
+                        ChooseModeActivity.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        PERMISSIONS_REQUEST))
+                .setCancelable(false)
                 .show();
     }
 
@@ -155,18 +148,8 @@ public class ChooseModeActivity extends AppCompatActivity implements View.OnClic
         new AlertDialog.Builder(this)
                 .setTitle("权限获取失败")
                 .setMessage("必须要有存储权限才能正常运行")
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ChooseModeActivity.this.finish();
-                    }
-                })
-                .setPositiveButton("去设置", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startAppSettings();
-                    }
-                })
+                .setNegativeButton("取消", (dialog, which) -> ChooseModeActivity.this.finish())
+                .setPositiveButton("去设置", (dialog, which) -> startAppSettings())
                 .setCancelable(false)
                 .show();
     }
@@ -174,12 +157,7 @@ public class ChooseModeActivity extends AppCompatActivity implements View.OnClic
     private void showNeedCameraPermissionDialog() {
         new AlertDialog.Builder(this)
                 .setMessage("摄像头权限被关闭，请开启权限后重试")
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
+                .setPositiveButton("确定", (dialog, which) -> dialog.dismiss())
                 .create()
                 .show();
     }
@@ -266,6 +244,7 @@ public class ChooseModeActivity extends AppCompatActivity implements View.OnClic
         if (resultCode == RESULT_OK) {
             if (requestCode == PICTURE_REQUEST_CODE) {
                 // 处理选择的图片
+                assert data != null;
                 handleInputPhoto(data.getData());
             } else if (requestCode == OPEN_SETTING_REQUEST_COED) {
                 requestMultiplePermissions();

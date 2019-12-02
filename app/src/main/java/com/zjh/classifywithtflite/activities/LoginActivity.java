@@ -1,21 +1,17 @@
 package com.zjh.classifywithtflite.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.zjh.classifywithtflite.R;
@@ -32,11 +28,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        TabHost tab = (TabHost) findViewById(android.R.id.tabhost);
+        TabHost tab = findViewById(android.R.id.tabhost);
         EditText userEmail = findViewById(R.id.userEmail);
         EditText userPassword = findViewById(R.id.userPassword);
         EditText adminAccount = findViewById(R.id.adminAccount);
         EditText adminPassword = findViewById(R.id.adminPassword);
+        Button userLoginButton = findViewById(R.id.userLoginButton);
+        Button adminLoginButton = findViewById(R.id.adminLoginButton);
 
         //初始化TabHost容器
         tab.setup();
@@ -44,32 +42,21 @@ public class LoginActivity extends AppCompatActivity {
         tab.addTab(tab.newTabSpec("tab1").setIndicator("用户", null).setContent(R.id.userLogin));
         tab.addTab(tab.newTabSpec("tab2").setIndicator("管理员", null).setContent(R.id.adminLogin));
 
-        Button userLoginButton = findViewById(R.id.userLoginButton);
-        userLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "用户登录", Toast.LENGTH_SHORT).show();
-                userLogin(userEmail.getText().toString(), userPassword.getText().toString());
-            }
+        userLoginButton.setOnClickListener(v -> {
+            Toast.makeText(LoginActivity.this, "用户登录", Toast.LENGTH_SHORT).show();
+            userLogin(userEmail.getText().toString(), userPassword.getText().toString());
         });
 
-        Button adminLoginButton = findViewById(R.id.adminLoginButton);
-        adminLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "管理员登录", Toast.LENGTH_SHORT).show();
-                adminLogin(adminAccount.getText().toString(), adminPassword.getText().toString());
-            }
+        adminLoginButton.setOnClickListener(v -> {
+            Toast.makeText(LoginActivity.this, "管理员登录", Toast.LENGTH_SHORT).show();
+            adminLogin(adminAccount.getText().toString(), adminPassword.getText().toString());
         });
 
         TextView goToRegister = findViewById(R.id.goToRegister);
-        goToRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "转去注册", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
-            }
+        goToRegister.setOnClickListener(v -> {
+            Toast.makeText(LoginActivity.this, "转去注册", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
         });
     }
 
