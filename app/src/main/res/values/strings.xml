@@ -16,4 +16,7 @@
     <string name="returnTo">返回</string>
     <string name="register">注册</string>
     <string name="registerTip">没有账号？现在注册</string>
+    <string name="delete">删除</string>
+    <string name="testLabelName">111啧啧啧Jfdfdfdasfdsafdsasfdsafjkl</string>
+    <string name="testTime">2019–10–11 12:11:00</string>
 </resources>

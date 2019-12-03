@@ -83,8 +83,7 @@ public abstract class Classifier {
          */
         private RectF location;
 
-        public Recognition(
-                final String id, final String title, final Float confidence, final RectF location) {
+        public Recognition(final String id, final String title, final Float confidence, final RectF location) {
             this.id = id;
             this.title = title;
             this.confidence = confidence;
@@ -197,7 +196,7 @@ public abstract class Classifier {
         // Gets the map of label and probability
         Map<String, Float> labeledProbability =
                 new TensorLabel(labels, probabilityProcessor.process(outputProbabilityBuffer))
-                .getMapWithFloatValue();
+                        .getMapWithFloatValue();
         Trace.endSection();
 
         // Gets top-k results
