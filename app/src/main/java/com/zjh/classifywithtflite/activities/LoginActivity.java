@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (responseString.equals("success")) {
                     Log.d(TAG, "onSuccess: login success flag");
 //                    Intent intent = new Intent(LoginActivity.this, ChooseModeActivity.class);
-                    Intent intent = new Intent(LoginActivity.this, AdminManageActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, LabelManageActivity.class);
                     startActivity(intent);
                 } else {
                     Toast.makeText(LoginActivity.this, "输入信息有误，请重新登录", Toast.LENGTH_SHORT).show();

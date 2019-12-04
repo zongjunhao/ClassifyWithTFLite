@@ -9,11 +9,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.zjh.classifywithtflite.R;
-import com.zjh.classifywithtflite.activities.AdminManageActivity;
+import com.zjh.classifywithtflite.activities.LabelManageActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.TimeZone;
 
 public class LabelAdapter extends RecyclerView.Adapter<LabelAdapter.ViewHolder> {
     private List<Label> labelList;
-    private AdminManageActivity activity;
+    private LabelManageActivity activity;
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -34,14 +33,14 @@ public class LabelAdapter extends RecyclerView.Adapter<LabelAdapter.ViewHolder> 
         ViewHolder(View view) {
             super(view);
             labelView = view;
-            labelImage = view.findViewById(R.id.labelImage);
-            labelName = view.findViewById(R.id.labelName);
-            labelTime = view.findViewById(R.id.labelTime);
-            deleteLabel = view.findViewById(R.id.deleteLabel);
+            labelImage = view.findViewById(R.id.itemImage);
+            labelName = view.findViewById(R.id.itemName);
+            labelTime = view.findViewById(R.id.itemTime);
+            deleteLabel = view.findViewById(R.id.deleteItem);
         }
     }
 
-    public LabelAdapter(List<Label> labelList, AdminManageActivity activity) {
+    public LabelAdapter(List<Label> labelList, LabelManageActivity activity) {
         this.labelList = labelList;
         this.activity = activity;
     }
@@ -49,12 +48,13 @@ public class LabelAdapter extends RecyclerView.Adapter<LabelAdapter.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.label_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycle_item, parent, false);
         ViewHolder holder = new ViewHolder(view);
         holder.labelView.setOnClickListener(v -> {
             int position = holder.getAdapterPosition();
             Label label = labelList.get(position);
             Toast.makeText(v.getContext(), label.getId() + " " + label.getName(), Toast.LENGTH_SHORT).show();
+            activity.viewImageByLabel(label.getId());
         });
         holder.deleteLabel.setOnClickListener(v -> {
             int position = holder.getAdapterPosition();

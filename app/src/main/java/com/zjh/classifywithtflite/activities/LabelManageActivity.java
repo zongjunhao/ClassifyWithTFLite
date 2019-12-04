@@ -1,5 +1,6 @@
 package com.zjh.classifywithtflite.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,16 +23,16 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
-public class AdminManageActivity extends AppCompatActivity {
+public class LabelManageActivity extends AppCompatActivity {
 
-    private static final String TAG = "AdminManageActivity";
+    private static final String TAG = "LabelManageActivity";
     // 用于保存收到的标签信息
     private List<Label> labels = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_manage);
+        setContentView(R.layout.activity_label_manage);
 
         viewLabels(); // 从服务器获取标签列表
         Log.d(TAG, "onCreate: end");
@@ -42,18 +43,21 @@ public class AdminManageActivity extends AppCompatActivity {
      */
     private void setRecycleView() {
         RecyclerView recyclerView = findViewById(R.id.labelRecycle);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(AdminManageActivity.this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(LabelManageActivity.this);
         recyclerView.setLayoutManager(layoutManager);
-        LabelAdapter labelAdapter = new LabelAdapter(labels, AdminManageActivity.this);
+        LabelAdapter labelAdapter = new LabelAdapter(labels, LabelManageActivity.this);
         recyclerView.setAdapter(labelAdapter);
     }
 
+    /**
+     * 查看标签列表
+     */
     private void viewLabels() {
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(Constant.VIEW_LABEL_URL, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Toast.makeText(AdminManageActivity.this, "网络错误，查询标签失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LabelManageActivity.this, "网络错误，查询标签失败", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onFailure: net error view label fail");
             }
 
@@ -68,6 +72,11 @@ public class AdminManageActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 删除标签
+     *
+     * @param labelId 标签id
+     */
     public void deleteLabel(int labelId) {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
@@ -75,23 +84,28 @@ public class AdminManageActivity extends AppCompatActivity {
         client.post(Constant.DELETE_LABEL_URL, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Toast.makeText(AdminManageActivity.this, "网络错误，删除标签失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LabelManageActivity.this, "网络错误，删除标签失败", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onFailure: net error delete label fail");
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 if (responseString.equals("success")) {
-                    Toast.makeText(AdminManageActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LabelManageActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "onSuccess: delete " + labelId + " success");
                     viewLabels();
                 } else {
-                    Toast.makeText(AdminManageActivity.this, "未知错误，删除失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LabelManageActivity.this, "未知错误，删除失败", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
+    /**
+     * 添加标签
+     *
+     * @param labelName 标签名
+     */
     public void addLabel(String labelName) {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
@@ -99,20 +113,31 @@ public class AdminManageActivity extends AppCompatActivity {
         client.post(Constant.ADD_LABEL_URL, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Toast.makeText(AdminManageActivity.this, "网络错误，添加标签失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LabelManageActivity.this, "网络错误，添加标签失败", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onFailure: net error add label fail");
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 if (responseString.equals("success")) {
-                    Toast.makeText(AdminManageActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LabelManageActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "onSuccess: add label " + labelName + " success");
                     viewLabels();
                 } else {
-                    Toast.makeText(AdminManageActivity.this, "未知错误，添加失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LabelManageActivity.this, "未知错误，添加失败", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    /**
+     * 点击标签后跳转到图片管理界面查看此标签类别下的图片
+     *
+     * @param labelId 标签id
+     */
+    public void viewImageByLabel(int labelId) {
+        Intent intent = new Intent(LabelManageActivity.this, ImageManageActivity.class);
+        intent.putExtra("labelId", labelId);
+        startActivity(intent);
     }
 }

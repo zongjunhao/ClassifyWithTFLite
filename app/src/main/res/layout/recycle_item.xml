@@ -5,7 +5,7 @@
     android:layout_margin="10dp">
 
     <ImageView
-        android:id="@+id/labelImage"
+        android:id="@+id/itemImage"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginStart="10dp"
@@ -18,7 +18,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/labelName"
+            android:id="@+id/itemName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -30,7 +30,7 @@
             android:ellipsize="end"/>
 
         <TextView
-            android:id="@+id/labelTime"
+            android:id="@+id/itemTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -48,7 +48,7 @@
         android:gravity="end">
 
         <Button
-            android:id="@+id/deleteLabel"
+            android:id="@+id/deleteItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/delete" />
