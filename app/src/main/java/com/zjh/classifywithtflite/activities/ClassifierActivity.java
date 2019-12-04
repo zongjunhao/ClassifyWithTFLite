@@ -41,6 +41,7 @@ public class ClassifierActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classfier);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         imageUri = getIntent().getParcelableExtra("imageUri");
         resultImage = findViewById(R.id.result_image);
@@ -65,6 +66,15 @@ public class ClassifierActivity extends AppCompatActivity {
 //                startActivity(intent);
 //            }
 //        });
+    }
+
+    /**
+     * 点击左上角返回按钮返回上一级活动
+     */
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
     }
 
     /**

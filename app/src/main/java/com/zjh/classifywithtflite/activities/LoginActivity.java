@@ -60,12 +60,18 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 用户登录
+     *
+     * @param email    邮箱
+     * @param password 密码
+     */
     private void userLogin(String email, String password) {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.add("email", email);
         params.add("password", password);
-        Log.d(TAG, "userLogin: "+Constant.USER_LOGIN_URL);
+        Log.d(TAG, "userLogin: " + Constant.USER_LOGIN_URL);
         client.post(Constant.USER_LOGIN_URL, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -79,7 +85,6 @@ public class LoginActivity extends AppCompatActivity {
                 if (responseString.equals("success")) {
                     Log.d(TAG, "onSuccess: login success flag");
                     Intent intent = new Intent(LoginActivity.this, ChooseModeActivity.class);
-//                    Intent intent = new Intent(LoginActivity.this, ClassifierActivity.class);
                     startActivity(intent);
                 } else {
                     Toast.makeText(LoginActivity.this, "输入信息有误，请重新登录", Toast.LENGTH_SHORT).show();
@@ -88,12 +93,18 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void adminLogin(String account, String password){
+    /**
+     * 管理员登录
+     *
+     * @param account  账号
+     * @param password 密码
+     */
+    private void adminLogin(String account, String password) {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.add("account", account);
         params.add("password", password);
-        Log.d(TAG, "adminLogin: "+Constant.ADMIN_LOGIN_URL);
+        Log.d(TAG, "adminLogin: " + Constant.ADMIN_LOGIN_URL);
         client.post(Constant.ADMIN_LOGIN_URL, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -106,7 +117,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, "onSuccess: " + responseString);
                 if (responseString.equals("success")) {
                     Log.d(TAG, "onSuccess: login success flag");
-//                    Intent intent = new Intent(LoginActivity.this, ChooseModeActivity.class);
                     Intent intent = new Intent(LoginActivity.this, LabelManageActivity.class);
                     startActivity(intent);
                 } else {

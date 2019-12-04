@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
@@ -33,12 +35,43 @@ public class ImageManageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_manage);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         int labelId = intent.getIntExtra("labelId", 0);
 
         viewImage(labelId); // 从服务器获取图片列表
         Log.d(TAG, "onCreate: end");
+    }
+
+    /**
+     * 点击左上角返回按钮返回上一级活动
+     */
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
+    }
+
+    /**
+     * 在右上角添加按钮
+     * @param menu 自定义的图形
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * 点击右上角按钮的动作
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.add) {
+            Toast.makeText(this, "点击了图片界面右上角加号", Toast.LENGTH_SHORT).show();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -100,7 +133,6 @@ public class ImageManageActivity extends AppCompatActivity {
                 if (responseString.equals("success")) {
                     Toast.makeText(ImageManageActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "onSuccess: delete " + imageId + " success");
-//                    viewLabels();
                 } else {
                     Toast.makeText(ImageManageActivity.this, "未知错误，删除失败", Toast.LENGTH_SHORT).show();
                 }

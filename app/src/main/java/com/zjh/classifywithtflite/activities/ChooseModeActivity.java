@@ -49,11 +49,20 @@ public class ChooseModeActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_choose_mode);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         findViewById(R.id.takePhotoByCamera).setOnClickListener(this);
         findViewById(R.id.chooseImageFromDCIM).setOnClickListener(this);
+    }
+
+    /**
+     * 点击左上角返回按钮返回上一级活动
+     */
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
     }
 
     @Override

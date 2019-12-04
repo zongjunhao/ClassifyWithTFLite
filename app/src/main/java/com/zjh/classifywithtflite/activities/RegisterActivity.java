@@ -24,6 +24,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rigister);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Button returnToLogin = findViewById(R.id.returnToLogin);
         Button register = findViewById(R.id.register);
@@ -43,6 +44,23 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 点击左上角返回按钮返回上一级活动
+     */
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
+    }
+
+    /**
+     * 向服务器发出注册请求
+     *
+     * @param userName        用户名
+     * @param password        密码
+     * @param confirmPassword 确认密码
+     * @param email           邮箱
+     */
     private void register(String userName, String password, String confirmPassword, String email) {
         if (password.equals(confirmPassword)) {
             AsyncHttpClient client = new AsyncHttpClient();
