@@ -1,10 +1,15 @@
 package com.zjh.classifywithtflite.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,6 +57,7 @@ public class LabelManageActivity extends AppCompatActivity {
 
     /**
      * 在右上角添加按钮
+     *
      * @param menu 自定义的图形
      */
     @Override
@@ -67,6 +73,7 @@ public class LabelManageActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.add) {
             Toast.makeText(this, "点击了标签界面右上角加号", Toast.LENGTH_SHORT).show();
+            openAddLabelDialog();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -161,6 +168,25 @@ public class LabelManageActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * 打开添加标签的对话框
+     */
+    public void openAddLabelDialog() {
+        // 新建EditText以在Dialog中输入信息
+        final EditText edit = new EditText(this);
+        // Dialog对话框
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("请输入标签名");
+        builder.setView(edit);
+        builder.setPositiveButton("确认", (dialog, which) -> {
+            Toast.makeText(this, "你输入的是: " + edit.getText().toString(), Toast.LENGTH_SHORT).show();
+            addLabel(edit.getText().toString());
+        });
+        builder.setNegativeButton("取消", (dialog, which) ->
+                Toast.makeText(this, "你点了取消", Toast.LENGTH_SHORT).show());
+        builder.show();
     }
 
     /**
