@@ -32,6 +32,8 @@ public class ImageManageActivity extends AppCompatActivity {
     private static final String TAG = "ImageManageActivity";
     // 用于保存收到的图片的信息
     private List<Image> images = new ArrayList<>();
+    // 保存当前图片所属的标签序号
+    private int labelId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +42,7 @@ public class ImageManageActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
-        int labelId = intent.getIntExtra("labelId", 0);
+        labelId = intent.getIntExtra("labelId", 0);
 
         viewImage(labelId); // 从服务器获取图片列表
         Log.d(TAG, "onCreate: end");
@@ -57,6 +59,7 @@ public class ImageManageActivity extends AppCompatActivity {
 
     /**
      * 在右上角添加按钮
+     *
      * @param menu 自定义的图形
      */
     @Override
@@ -71,7 +74,7 @@ public class ImageManageActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.add) {
-            Toast.makeText(this, "点击了图片界面右上角加号", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, labelId + "点击了图片界面右上角加号", Toast.LENGTH_SHORT).show();
 
         }
         return super.onOptionsItemSelected(item);
