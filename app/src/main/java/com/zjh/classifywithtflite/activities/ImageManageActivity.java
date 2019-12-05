@@ -20,6 +20,8 @@ import com.zjh.classifywithtflite.base.Image;
 import com.zjh.classifywithtflite.base.ImageAdapter;
 import com.zjh.classifywithtflite.constant.Constant;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +72,7 @@ public class ImageManageActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.add) {
             Toast.makeText(this, "点击了图片界面右上角加号", Toast.LENGTH_SHORT).show();
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -124,8 +127,8 @@ public class ImageManageActivity extends AppCompatActivity {
         client.post(Constant.DELETE_IMAGE_URL, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Toast.makeText(ImageManageActivity.this, "网络错误，删除标签失败", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "onFailure: net error delete label fail");
+                Toast.makeText(ImageManageActivity.this, "网络错误，删除图片失败", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onFailure: net error delete image fail");
             }
 
             @Override
@@ -138,5 +141,31 @@ public class ImageManageActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+
+    public void addImage(int labelId, File imageFile) throws FileNotFoundException {
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        params.put("file", imageFile, "Content-Type");
+        params.put("labelId", labelId);
+        client.post(Constant.ADD_IMAGE_URL, params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Toast.makeText(ImageManageActivity.this, "网络错误，添加图片失败", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onFailure: net error add image fail");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                if (responseString.equals("success")) {
+                    Toast.makeText(ImageManageActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onSuccess: add image success");
+                } else {
+                    Toast.makeText(ImageManageActivity.this, "未知错误，删除失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 }
