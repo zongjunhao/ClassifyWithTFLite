@@ -28,17 +28,18 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        TabHost tab = findViewById(android.R.id.tabhost);
-        EditText userEmail = findViewById(R.id.userEmail);
-        EditText userPassword = findViewById(R.id.userPassword);
-        EditText adminAccount = findViewById(R.id.adminAccount);
-        EditText adminPassword = findViewById(R.id.adminPassword);
-        Button userLoginButton = findViewById(R.id.userLoginButton);
-        Button adminLoginButton = findViewById(R.id.adminLoginButton);
+        TabHost tab = findViewById(android.R.id.tabhost);               // tab容器
+        EditText userEmail = findViewById(R.id.userEmail);              // 用户邮箱
+        EditText userPassword = findViewById(R.id.userPassword);        // 用户密码
+        EditText adminAccount = findViewById(R.id.adminAccount);        // 管理员账号
+        EditText adminPassword = findViewById(R.id.adminPassword);      // 管理员密码
+        Button userLoginButton = findViewById(R.id.userLoginButton);    // 用户登录按钮
+        Button adminLoginButton = findViewById(R.id.adminLoginButton);  // 管理员登录按钮
+        TextView goToRegister = findViewById(R.id.goToRegister);        // 转去注册页面
 
-        //初始化TabHost容器
+        // 初始化TabHost容器
         tab.setup();
-        //在TabHost创建标签，然后设置：标题／图标／标签页布局
+        // 在TabHost创建标签，然后设置：标题／图标／标签页布局
         tab.addTab(tab.newTabSpec("tab1").setIndicator("用户", null).setContent(R.id.userLogin));
         tab.addTab(tab.newTabSpec("tab2").setIndicator("管理员", null).setContent(R.id.adminLogin));
 
@@ -52,7 +53,6 @@ public class LoginActivity extends AppCompatActivity {
             adminLogin(adminAccount.getText().toString(), adminPassword.getText().toString());
         });
 
-        TextView goToRegister = findViewById(R.id.goToRegister);
         goToRegister.setOnClickListener(v -> {
             Toast.makeText(LoginActivity.this, "转去注册", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
