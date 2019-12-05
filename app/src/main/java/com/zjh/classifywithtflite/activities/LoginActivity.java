@@ -175,18 +175,6 @@ public class LoginActivity extends AppCompatActivity {
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        if (requestCode == PERMISSIONS_REQUEST) {
-//            // permission denied 显示对话框告知用户必须打开权限 (storagePermission )
-//            // Should we show an explanation?
-//            // 当app完全没有机会被授权的时候，调用shouldShowRequestPermissionRationale() 返回false
-//            if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permissions[0])
-//                    && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-//                showNeedStoragePermissionDialog();
-//            } else {
-//                // 已经被禁止的状态，比如用户在权限对话框中选择了“不再显示”，需要自己弹窗解释
-//                showMissingStoragePermissionDialog();
-//            }
-//        }
         if (requestCode == PERMISSIONS_REQUEST) {
             if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permissions[0]) && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 //permission denied 显示对话框告知用户必须打开权限 (storagePermission )
