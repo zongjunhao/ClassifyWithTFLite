@@ -1,17 +1,26 @@
 package com.zjh.classifywithtflite.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.alibaba.fastjson.JSON;
+import com.bumptech.glide.Glide;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -19,6 +28,7 @@ import com.zjh.classifywithtflite.R;
 import com.zjh.classifywithtflite.base.Image;
 import com.zjh.classifywithtflite.base.ImageAdapter;
 import com.zjh.classifywithtflite.constant.Constant;
+import com.zjh.classifywithtflite.kit.FileUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,10 +40,13 @@ import cz.msebera.android.httpclient.Header;
 public class ImageManageActivity extends AppCompatActivity {
 
     private static final String TAG = "ImageManageActivity";
-    // 用于保存收到的图片的信息
-    private List<Image> images = new ArrayList<>();
-    // 保存当前图片所属的标签序号
-    private int labelId;
+    // 请求码
+    private static final int TAKE_PHOTO_REQUEST_CODE = 120;
+    private static final int PICTURE_REQUEST_CODE = 911;
+    private Uri currentTakePhotoUri;
+
+    private List<Image> images = new ArrayList<>();    // 用于保存收到的图片的信息
+    private int labelId;    // 保存当前图片所属的标签序号
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +87,8 @@ public class ImageManageActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.add) {
-            Toast.makeText(this, labelId + "点击了图片界面右上角加号", Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(this, "点击了图片界面右上角加号", Toast.LENGTH_SHORT).show();
+            openAddImageDialog();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -157,6 +170,7 @@ public class ImageManageActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Toast.makeText(ImageManageActivity.this, "网络错误，添加图片失败", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onFailure: net error add image fail");
+
             }
 
             @Override
@@ -169,6 +183,164 @@ public class ImageManageActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
+    public void openAddImageDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("选择上传方式");
+        builder.setPositiveButton("相册选取", (dialog, which) -> {
+            Toast.makeText(this, "点击了从相册选取", Toast.LENGTH_SHORT).show();
+            chooseImageFromDCIM();
+        });
+        builder.setNegativeButton("拍照上传", (dialog, which) -> {
+            Toast.makeText(this, "点击了拍照上传", Toast.LENGTH_SHORT).show();
+            takePhotoByCamera();
+        });
+        builder.show();
+    }
+
+    /**
+     * 使用系统相机拍照
+     */
+    private void takePhotoByCamera() {
+        openSystemCamera();
+    }
+
+    /**
+     * 选择一张图片并裁剪获得一个小图
+     */
+    private void chooseImageFromDCIM() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICTURE_REQUEST_CODE);
+    }
+
+    /**
+     * 打开系统相机
+     */
+    private void openSystemCamera() {
+        // 调用系统相机
+        Intent takePhotoIntent = new Intent();
+        takePhotoIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // 这句的作用是如果没有相机则该应用不会闪退，要是不加这句则当系统没有相机应用的时候该应用会闪退
+        if (takePhotoIntent.resolveActivity(getPackageManager()) == null) {
+            Toast.makeText(this, "当前系统没有可用的相机应用", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String fileName = "TF_" + System.currentTimeMillis() + ".jpg";
+        File photoFile = new File(FileUtil.getPhotoCacheFolder(), fileName);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            // 通过FileProvider创建一个content类型的Uri
+            currentTakePhotoUri = FileProvider.getUriForFile(this, "com.zjh.classifywithtflite.fileprovider", photoFile);
+            takePhotoIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Log.d(TAG, "openSystemCamera: 11111111111111111111111111111111111");
+        } else {
+            currentTakePhotoUri = Uri.fromFile(photoFile);
+            Log.d(TAG, "openSystemCamera: 22222222222222222222222222222222222");
+        }
+
+        // 将拍照结果保存至outputFile的Uri中，不保留在相册中
+        takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, currentTakePhotoUri);
+        startActivityForResult(takePhotoIntent, TAKE_PHOTO_REQUEST_CODE);
+    }
+
+    /**
+     * 拍照或选择图片的回调函数
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == PICTURE_REQUEST_CODE) {
+                // 处理选择的图片
+                assert data != null;
+//                handleInputPhoto(data.getData());
+                openConfirmDialog(data.getData());
+            } else if (requestCode == TAKE_PHOTO_REQUEST_CODE) {
+                // 如果拍照成功，加载图片并识别
+//                handleInputPhoto(currentTakePhotoUri);
+                openConfirmDialog(currentTakePhotoUri);
+            }
+        }
+    }
+
+    /**
+     * 打开确认上传的对话框
+     *
+     * @param uri 图片uri
+     */
+    public void openConfirmDialog(Uri uri) {
+        // 新建EditText以在Dialog中输入信息
+        final ImageView imageView = new ImageView(this);
+        Glide.with(this).load(uri).into(imageView);
+        // Dialog对话框
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("确认上传");
+        builder.setView(imageView);
+        builder.setPositiveButton("确认", (dialog, which) -> {
+            Toast.makeText(this, "你点了确认", Toast.LENGTH_SHORT).show();
+            try {
+                addImage(labelId, getFileThroughUri(uri));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+        builder.setNegativeButton("取消", (dialog, which) ->
+                Toast.makeText(this, "你点了取消", Toast.LENGTH_SHORT).show());
+        builder.show();
+    }
+
+    /**
+     * 通过图片URI获取图片文件
+     *
+     * @param uri 图片URI
+     * @return 图片文件
+     */
+    public File getFileThroughUri(Uri uri) {
+        // 当选择的图片不为空的话，在获取到图片的途径
+        String[] projection = {MediaStore.Images.Media.DATA};
+        File file = null;
+        Cursor cursor = null;
+        String path;
+        try {
+            cursor = this.getContentResolver().query(uri, projection, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(projection[0]);
+                path = cursor.getString(columnIndex);
+
+            /*这里加这样一个判断主要是为了第三方的软件选择，
+            比如：使用第三方的文件管理器的话，选择的文件就不一定是图片了，
+            这样的话，我们判断文件的后缀名 如果是图片格式的话，那么才可*/
+                if (path.endsWith("jpg") || path.endsWith("png")) {
+                    file = new File(path);
+                } else {
+                    alert();
+                }
+            } else {
+                alert();
+            }
+        } catch (Exception e) {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return file;
+    }
+
+    /**
+     * 选择的照片无效时弹出对话框
+     */
+    private void alert() {
+        // Dialog对话框
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提示");
+        builder.setMessage("您选择的不是有效的图片");
+        builder.setPositiveButton("确认", (dialog, which) ->
+                Toast.makeText(this, "你点了确认", Toast.LENGTH_SHORT).show()
+        );
+        builder.show();
     }
 }

@@ -1,37 +1,28 @@
 package com.zjh.classifywithtflite.activities;
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.zjh.classifywithtflite.R;
 import com.zjh.classifywithtflite.kit.FileUtil;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ChooseModeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "ChooseModeActivity";
-    // 权限请求码
+    // 请求码
     private static final int TAKE_PHOTO_REQUEST_CODE = 120;
     private static final int PICTURE_REQUEST_CODE = 911;
     // 拍照所得图片的保存路径
