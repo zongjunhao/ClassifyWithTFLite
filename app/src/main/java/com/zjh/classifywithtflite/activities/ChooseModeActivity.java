@@ -31,11 +31,7 @@ import java.util.List;
 public class ChooseModeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "ChooseModeActivity";
-    private static final String PACKAGE_URL_SCHEME = "package:";
     // 权限请求码
-    private static final int PERMISSIONS_REQUEST = 108;
-    private static final int OPEN_SETTING_REQUEST_COED = 110;
-    private static final int CAMERA_PERMISSIONS_REQUEST_CODE = 119;
     private static final int TAKE_PHOTO_REQUEST_CODE = 120;
     private static final int PICTURE_REQUEST_CODE = 911;
     // 拍照所得图片的保存路径
@@ -80,106 +76,6 @@ public class ChooseModeActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-
-    /**
-     * 请求存储和相机权限
-     */
-    private void requestMultiplePermissions() {
-        String storagePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-        String cameraPermission = Manifest.permission.CAMERA;
-
-        // 判断是否有两种权限
-        int hasStoragePermission = ActivityCompat.checkSelfPermission(this, storagePermission);
-        int hasCameraPermission = ActivityCompat.checkSelfPermission(this, cameraPermission);
-
-        // 将没有的权限加入到列表中，用于申请权限使用
-        List<String> permissions = new ArrayList<>();
-        if (hasStoragePermission != PackageManager.PERMISSION_GRANTED) {
-            permissions.add(storagePermission);
-        }
-        if (hasCameraPermission != PackageManager.PERMISSION_GRANTED) {
-            permissions.add(cameraPermission);
-        }
-
-        // permissions非空（有需要申请的权限）
-        if (!permissions.isEmpty()) {
-            String[] params = permissions.toArray(new String[permissions.size()]);
-            ActivityCompat.requestPermissions(this, params, PERMISSIONS_REQUEST);
-        }
-    }
-
-    /**
-     * 请求权限的回调函数
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PERMISSIONS_REQUEST) {
-            // permission denied 显示对话框告知用户必须打开权限 (storagePermission )
-            // Should we show an explanation?
-            // 当app完全没有机会被授权的时候，调用shouldShowRequestPermissionRationale() 返回false
-            if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permissions[0])
-                    && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                showNeedStoragePermissionDialog();
-            } else {
-                // 已经被禁止的状态，比如用户在权限对话框中选择了“不再显示”，需要自己弹窗解释
-                showMissingStoragePermissionDialog();
-            }
-        } else if (requestCode == CAMERA_PERMISSIONS_REQUEST_CODE) {
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                showNeedCameraPermissionDialog();
-            } else {
-                openSystemCamera();
-            }
-        }
-    }
-
-    /**
-     * 显示权限缺失提示，可再次请求动态权限
-     */
-    private void showNeedStoragePermissionDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("权限获取提示")
-                .setMessage("必须要有存储权限才能获取到图片")
-                .setNegativeButton("取消", (dialog, which) -> dialog.cancel())
-                .setPositiveButton("确定", (dialog, which) ->
-                        ActivityCompat.requestPermissions(
-                        ChooseModeActivity.this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        PERMISSIONS_REQUEST))
-                .setCancelable(false)
-                .show();
-    }
-
-    /**
-     * 显示权限被拒提示，只能进入设置手动改
-     */
-    private void showMissingStoragePermissionDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("权限获取失败")
-                .setMessage("必须要有存储权限才能正常运行")
-                .setNegativeButton("取消", (dialog, which) -> ChooseModeActivity.this.finish())
-                .setPositiveButton("去设置", (dialog, which) -> startAppSettings())
-                .setCancelable(false)
-                .show();
-    }
-
-    private void showNeedCameraPermissionDialog() {
-        new AlertDialog.Builder(this)
-                .setMessage("摄像头权限被关闭，请开启权限后重试")
-                .setPositiveButton("确定", (dialog, which) -> dialog.dismiss())
-                .create()
-                .show();
-    }
-
-    /**
-     * 启动应用的设置进行授权
-     */
-    private void startAppSettings() {
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.setData(Uri.parse(PACKAGE_URL_SCHEME + getPackageName()));
-        startActivityForResult(intent, OPEN_SETTING_REQUEST_COED);
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -198,11 +94,7 @@ public class ChooseModeActivity extends AppCompatActivity implements View.OnClic
      * 使用系统相机拍照
      */
     private void takePhotoByCamera() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSIONS_REQUEST_CODE);
-        } else {
-            openSystemCamera();
-        }
+        openSystemCamera();
     }
 
     /**
@@ -255,8 +147,6 @@ public class ChooseModeActivity extends AppCompatActivity implements View.OnClic
                 // 处理选择的图片
                 assert data != null;
                 handleInputPhoto(data.getData());
-            } else if (requestCode == OPEN_SETTING_REQUEST_COED) {
-                requestMultiplePermissions();
             } else if (requestCode == TAKE_PHOTO_REQUEST_CODE) {
                 // 如果拍照成功，加载图片并识别
                 handleInputPhoto(currentTakePhotoUri);
@@ -266,6 +156,7 @@ public class ChooseModeActivity extends AppCompatActivity implements View.OnClic
 
     /**
      * 跳转到ClassifierActivity进行识别
+     *
      * @param imageUri 图片Uri地址
      */
     private void handleInputPhoto(Uri imageUri) {
