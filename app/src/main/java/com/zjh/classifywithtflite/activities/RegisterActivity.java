@@ -68,6 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
             params.put("account", userName);
             params.put("password", password);
             params.put("email", email);
+            Log.d(TAG, "register: " + Constant.USER_REGISTER_URL);
             client.post(Constant.USER_REGISTER_URL, params, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

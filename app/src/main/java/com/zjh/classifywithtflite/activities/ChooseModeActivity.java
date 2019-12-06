@@ -151,6 +151,7 @@ public class ChooseModeActivity extends AppCompatActivity implements View.OnClic
      * @param imageUri 图片Uri地址
      */
     private void handleInputPhoto(Uri imageUri) {
+        Log.d(TAG, "handleInputPhoto: " + imageUri);
         Intent intent = new Intent(ChooseModeActivity.this, ClassifierActivity.class);
         intent.putExtra("imageUri", imageUri);
         startActivity(intent);

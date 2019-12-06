@@ -2,7 +2,7 @@ package com.zjh.classifywithtflite.activities;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSON;
-import com.bumptech.glide.Glide;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -29,9 +28,11 @@ import com.zjh.classifywithtflite.base.Image;
 import com.zjh.classifywithtflite.base.ImageAdapter;
 import com.zjh.classifywithtflite.constant.Constant;
 import com.zjh.classifywithtflite.kit.FileUtil;
+import com.zjh.classifywithtflite.kit.ImageKit;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,9 +87,15 @@ public class ImageManageActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.add) {
-            Toast.makeText(this, "点击了图片界面右上角加号", Toast.LENGTH_SHORT).show();
-            openAddImageDialog();
+        switch (item.getItemId()) {
+            case R.id.add:
+                chooseImageFromDCIM();
+                break;
+            case R.id.generate:
+                Toast.makeText(this, "服务器正在生成模型，请耐心等待", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -113,6 +120,7 @@ public class ImageManageActivity extends AppCompatActivity {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("labelId", labelId);
+        Log.d(TAG, "viewImage: " + Constant.VIEW_IMAGES_URL);
         client.post(Constant.VIEW_IMAGES_URL, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -140,6 +148,7 @@ public class ImageManageActivity extends AppCompatActivity {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("imageId", imageId);
+        Log.d(TAG, "deleteImage: " + Constant.DELETE_IMAGE_URL);
         client.post(Constant.DELETE_IMAGE_URL, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -152,6 +161,7 @@ public class ImageManageActivity extends AppCompatActivity {
                 if (responseString.equals("success")) {
                     Toast.makeText(ImageManageActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "onSuccess: delete " + imageId + " success");
+                    viewImage(labelId);
                 } else {
                     Toast.makeText(ImageManageActivity.this, "未知错误，删除失败", Toast.LENGTH_SHORT).show();
                 }
@@ -159,12 +169,19 @@ public class ImageManageActivity extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * 添加图片的http请求
+     *
+     * @param labelId   标签ID
+     * @param imageFile 图片文件
+     * @throws FileNotFoundException 文件未找到异常
+     */
     public void addImage(int labelId, File imageFile) throws FileNotFoundException {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("file", imageFile, "Content-Type");
         params.put("labelId", labelId);
+        Log.d(TAG, "addImage: " + Constant.ADD_IMAGE_URL);
         client.post(Constant.ADD_IMAGE_URL, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -178,13 +195,17 @@ public class ImageManageActivity extends AppCompatActivity {
                 if (responseString.equals("success")) {
                     Toast.makeText(ImageManageActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "onSuccess: add image success");
+                    viewImage(labelId);
                 } else {
-                    Toast.makeText(ImageManageActivity.this, "未知错误，删除失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ImageManageActivity.this, "未知错误，添加图片失败", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
+    /**
+     * 打开添加图片的提示框，选择添加方式
+     */
     public void openAddImageDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("选择上传方式");
@@ -258,11 +279,19 @@ public class ImageManageActivity extends AppCompatActivity {
                 // 处理选择的图片
                 assert data != null;
 //                handleInputPhoto(data.getData());
-                openConfirmDialog(data.getData());
+                try {
+                    openConfirmDialog(data.getData());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else if (requestCode == TAKE_PHOTO_REQUEST_CODE) {
                 // 如果拍照成功，加载图片并识别
 //                handleInputPhoto(currentTakePhotoUri);
-                openConfirmDialog(currentTakePhotoUri);
+                try {
+                    openConfirmDialog(currentTakePhotoUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -272,75 +301,31 @@ public class ImageManageActivity extends AppCompatActivity {
      *
      * @param uri 图片uri
      */
-    public void openConfirmDialog(Uri uri) {
-        // 新建EditText以在Dialog中输入信息
+    public void openConfirmDialog(Uri uri) throws IOException {
+        Log.d(TAG, "openConfirmDialog: " + uri);
+
+        // 新建ImageView，在Dialog中预览要上传的图片
         final ImageView imageView = new ImageView(this);
-        Glide.with(this).load(uri).into(imageView);
+        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+        imageView.setImageBitmap(bitmap);
+
         // Dialog对话框
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("确认上传");
         builder.setView(imageView);
         builder.setPositiveButton("确认", (dialog, which) -> {
             Toast.makeText(this, "你点了确认", Toast.LENGTH_SHORT).show();
+            String path = ImageKit.getRealPathFromUri(ImageManageActivity.this, uri);
+            Log.d(TAG, "openConfirmDialog: " + path);
+            File file = new File(path);
             try {
-                addImage(labelId, getFileThroughUri(uri));
+                addImage(labelId, file);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         });
         builder.setNegativeButton("取消", (dialog, which) ->
                 Toast.makeText(this, "你点了取消", Toast.LENGTH_SHORT).show());
-        builder.show();
-    }
-
-    /**
-     * 通过图片URI获取图片文件
-     *
-     * @param uri 图片URI
-     * @return 图片文件
-     */
-    public File getFileThroughUri(Uri uri) {
-        // 当选择的图片不为空的话，在获取到图片的途径
-        String[] projection = {MediaStore.Images.Media.DATA};
-        File file = null;
-        Cursor cursor = null;
-        String path;
-        try {
-            cursor = this.getContentResolver().query(uri, projection, null, null, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                int columnIndex = cursor.getColumnIndexOrThrow(projection[0]);
-                path = cursor.getString(columnIndex);
-
-            /*这里加这样一个判断主要是为了第三方的软件选择，
-            比如：使用第三方的文件管理器的话，选择的文件就不一定是图片了，
-            这样的话，我们判断文件的后缀名 如果是图片格式的话，那么才可*/
-                if (path.endsWith("jpg") || path.endsWith("png")) {
-                    file = new File(path);
-                } else {
-                    alert();
-                }
-            } else {
-                alert();
-            }
-        } catch (Exception e) {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-        return file;
-    }
-
-    /**
-     * 选择的照片无效时弹出对话框
-     */
-    private void alert() {
-        // Dialog对话框
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("提示");
-        builder.setMessage("您选择的不是有效的图片");
-        builder.setPositiveButton("确认", (dialog, which) ->
-                Toast.makeText(this, "你点了确认", Toast.LENGTH_SHORT).show()
-        );
         builder.show();
     }
 }

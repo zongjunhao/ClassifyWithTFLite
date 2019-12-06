@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="addImageFromCamera"
+        android:id="@+id/addImageFromCamera"
         android:icon="@drawable/ic_camera_white"
         android:title="@string/choose_from_camera"
         app:showAsAction="ifRoom">
     </item>
     <item
-        android:id="addImageFromDCIM"
+        android:id="@+id/addImageFromDCIM"
         android:icon="@drawable/ic_image_white"
         android:title="@string/choose_from_DCIM"
         app:showAsAction="ifRoom">

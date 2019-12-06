@@ -71,9 +71,15 @@ public class LabelManageActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.add) {
-            Toast.makeText(this, "点击了标签界面右上角加号", Toast.LENGTH_SHORT).show();
-            openAddLabelDialog();
+        switch (item.getItemId()) {
+            case R.id.add:
+                openAddLabelDialog();
+                break;
+            case R.id.generate:
+                Toast.makeText(this, "服务器正在生成模型，请耐心等待", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -94,6 +100,7 @@ public class LabelManageActivity extends AppCompatActivity {
      */
     private void viewLabels() {
         AsyncHttpClient client = new AsyncHttpClient();
+        Log.d(TAG, "viewLabels: " + Constant.VIEW_LABEL_URL);
         client.post(Constant.VIEW_LABEL_URL, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -121,6 +128,7 @@ public class LabelManageActivity extends AppCompatActivity {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("labelId", labelId);
+        Log.d(TAG, "deleteLabel: " + Constant.DELETE_LABEL_URL);
         client.post(Constant.DELETE_LABEL_URL, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -150,6 +158,7 @@ public class LabelManageActivity extends AppCompatActivity {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("name", labelName);
+        Log.d(TAG, "addLabel: " + Constant.ADD_LABEL_URL);
         client.post(Constant.ADD_LABEL_URL, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
