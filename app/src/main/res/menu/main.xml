@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/generate"
-        android:title="@string/generate">
+        android:icon="@drawable/generate"
+        android:title="@string/generate"
+        app:showAsAction="ifRoom">
     </item>
 
     <item

@@ -24,6 +24,9 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import com.zjh.classifywithtflite.R;
 import com.zjh.classifywithtflite.constant.Constant;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +78,8 @@ public class LoginActivity extends AppCompatActivity {
 
         // 请求存储和相机权限
         requestMultiplePermissions();
+
+        checkVersion();
     }
 
     /**
@@ -229,5 +234,57 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse(PACKAGE_URL_SCHEME + getPackageName()));
         startActivityForResult(intent, OPEN_SETTING_REQUEST_COED);
+    }
+
+    private void checkVersion() {
+        // 读取本地版本
+        StringBuilder clientVersion = new StringBuilder();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(this.getAssets().open("version.txt")));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                clientVersion.append(line);
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "checkVersion: clientVersion" + clientVersion.toString());
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        params.add("clientVersion", clientVersion.toString());
+        Log.d(TAG, "checkVersion: " + Constant.CHECK_VERSION_URL);
+        client.post(Constant.CHECK_VERSION_URL, params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d(TAG, "onFailure: check version fail net error");
+                Toast.makeText(LoginActivity.this, "网络错误，检查版本失败", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Log.d(TAG, "onSuccess: " + responseString);
+                if (responseString.equals("update")) {
+                    Log.d(TAG, "onSuccess: check version flag");
+                    openUpdateDialog();
+                }
+            }
+        });
+    }
+
+    private void openUpdateDialog() {
+        // Dialog对话框
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提示");
+        builder.setMessage("有新版本可用，点击更新");
+        builder.setPositiveButton("确认", (dialog, which) -> {
+            Uri uri = Uri.parse(Constant.APK_DOWNLOAD_URL);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        });
+        builder.setNegativeButton("取消", (dialog, which) ->
+                Toast.makeText(this, "你点了取消", Toast.LENGTH_SHORT).show());
+        builder.show();
     }
 }

@@ -76,7 +76,7 @@ public class LabelManageActivity extends AppCompatActivity {
                 openAddLabelDialog();
                 break;
             case R.id.generate:
-                Toast.makeText(this, "服务器正在生成模型，请耐心等待", Toast.LENGTH_SHORT).show();
+                generateModel();
                 break;
             default:
                 break;
@@ -207,5 +207,25 @@ public class LabelManageActivity extends AppCompatActivity {
         Intent intent = new Intent(LabelManageActivity.this, ImageManageActivity.class);
         intent.putExtra("labelId", labelId);
         startActivity(intent);
+    }
+
+    /**
+     * 生成识别模型
+     */
+    public void generateModel() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        Log.d(TAG, "generateModel: " + Constant.GENERATE_MODEL_URL);
+        client.post(Constant.GENERATE_MODEL_URL, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Toast.makeText(LabelManageActivity.this, "网络错误，生成模型失败", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onFailure: net error generate model fail");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Toast.makeText(LabelManageActivity.this, "服务器正在生成模型，请耐心等待", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -3,7 +3,7 @@ package com.zjh.classifywithtflite.constant;
 public class Constant {
 
     // 服务器IP地址
-    private final static String SERVER_IP = "192.168.1.235";
+    private final static String SERVER_IP = "10.174.180.170";
     // 服务器上的项目名称
     private final static String SERVER_PROJECT_NAME = "ImageClassificationServer_war_exploded";
     // 拼接形成请求地址
@@ -19,4 +19,9 @@ public class Constant {
     public final static String VIEW_IMAGES_URL      = REQUEST_URL + "image/viewImages";
     public final static String ADD_IMAGE_URL        = REQUEST_URL + "image/addImage";
     public final static String DELETE_IMAGE_URL     = REQUEST_URL + "image/deleteImage";
+    public final static String GENERATE_MODEL_URL   = REQUEST_URL + "model/generate";
+    public final static String CHECK_VERSION_URL    = REQUEST_URL + "version/check";
+
+    // apk文件下载地址
+    public final static String APK_DOWNLOAD_URL     = REQUEST_URL + "app-release.apk";
 }

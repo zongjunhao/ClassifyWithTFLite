@@ -92,7 +92,7 @@ public class ImageManageActivity extends AppCompatActivity {
                 chooseImageFromDCIM();
                 break;
             case R.id.generate:
-                Toast.makeText(this, "服务器正在生成模型，请耐心等待", Toast.LENGTH_SHORT).show();
+                generateModel();
                 break;
             default:
                 break;
@@ -327,5 +327,25 @@ public class ImageManageActivity extends AppCompatActivity {
         builder.setNegativeButton("取消", (dialog, which) ->
                 Toast.makeText(this, "你点了取消", Toast.LENGTH_SHORT).show());
         builder.show();
+    }
+
+    /**
+     * 生成识别模型
+     */
+    public void generateModel() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        Log.d(TAG, "generateModel: " + Constant.GENERATE_MODEL_URL);
+        client.post(Constant.GENERATE_MODEL_URL, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Toast.makeText(ImageManageActivity.this, "网络错误，生成模型失败", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onFailure: net error generate model fail");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Toast.makeText(ImageManageActivity.this, "服务器正在生成模型，请耐心等待", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
