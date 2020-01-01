@@ -62,6 +62,11 @@ public class RegisterActivity extends AppCompatActivity {
      * @param email           邮箱
      */
     private void register(String userName, String password, String confirmPassword, String email) {
+        if (userName.equals("") || password.equals("") || confirmPassword.equals("") || email.equals("")) {
+            Log.d(TAG, "register: 无效信息");
+            Toast.makeText(RegisterActivity.this, "无效信息，请重新输入", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (password.equals(confirmPassword)) {
             AsyncHttpClient client = new AsyncHttpClient();
             RequestParams params = new RequestParams();
